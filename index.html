@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+    <button id="zero" class="number">0</button>
+    <button id="one" class="number">1</button>
+    <button id="two" class="number">2</button>
+    <button id="three" class="number">3</button>
+    <button id="four" class="number">4</button>
+    <button id="five" class="number">5</button>
+    <button id="six" class="number">6</button>
+    <button id="seven" class="number">7</button>
+    <button id="eight" class="number">8</button>
+    <button id="nine" class="number">9</button>
+
+    <button id="add">+</button>
+    <button id="subtract">-</button>
+    <button id="multiply">*</button>
+    <button id="divide">/</button>
+
+    <button id="equals">=</button>
+    <button id="clear">clear</button>
+
+    <div id="display">Display</div>
+    <script>
+        function add(a, b) {
+            return parseFloat(a) + parseFloat(b);
+        }
+
+        function subtract(a, b) {
+            return parseFloat(a) - parseFloat(b);
+        }
+
+        function multiply(a, b) {
+            return parseFloat(a) * parseFloat(b);
+        }
+
+        function divide(a, b) {
+            return parseFloat(a) / parseFloat(b);
+        }
+
+        let number1;
+        let operator;
+        let number2;
+        let result;
+
+        function operate() {
+            if (operator == "+") {
+                result = display.textContent = add(number1, number2);
+            } else if (operator == "-") {
+                result = display.textContent = subtract(number1, number2);
+            } else if (operator == "*") {
+                result = display.textContent = multiply(number1, number2);
+            } else if (operator == "/") {
+                result = display.textContent = divide(number1, number2);
+            } 
+                operator = null;
+                number2 = null;
+                number1 = result;
+        }
+
+        let display = document.querySelector("#display");
+
+        let numbers = document.querySelectorAll(".number");
+
+        for (let i = 0; i < numbers.length; i++) {
+            numbers[i].addEventListener("click", function() {
+            if (display.textContent == "Display") {
+                display.textContent = "";
+            }
+            if (operator == null && result == null) {
+                if (number1 == null) {
+                    number1 = "0" + numbers[i].textContent;
+                    display.textContent = numbers[i].textContent;
+                } else {
+                    number1 += numbers[i].textContent
+                    display.textContent += numbers[i].textContent;
+                }
+            } else {
+                if (result != null || operator != null) {
+                    if (number2 == null) {
+                        number2 = "0" + numbers[i].textContent
+                        display.textContent = numbers[i].textContent;
+                    } else {
+                        number2 += numbers[i].textContent
+                        display.textContent += numbers[i].textContent;
+                    }
+                }
+            }
+            });
+        }
+
+        let adding = document.querySelector("#add");
+        adding.addEventListener("click", function() {
+            operator = "+";
+        });
+
+        let subtracting = document.querySelector("#subtract");
+        subtracting.addEventListener("click", function() {
+            operator = "-";
+        });
+
+        let multiplying = document.querySelector("#multiply");
+        multiplying.addEventListener("click", function() {
+            operator = "*";
+        });
+
+        let dividing = document.querySelector("#divide");
+        dividing.addEventListener("click", function() {
+            operator = "/";
+        });
+
+        let equals = document.querySelector("#equals");
+        equals.addEventListener("click", operate);
+    </script>
+</body>
+</html>
