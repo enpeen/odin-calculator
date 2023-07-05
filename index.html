@@ -24,22 +24,26 @@
     <button id="equals">=</button>
     <button id="clear">clear</button>
 
-    <div id="display">Display</div>
+    <button id="comma">.</button>
+
+    <button id="sign">+/-</button>
+
+    <div id="display">0</div>
     <script>
         function add(a, b) {
-            return parseFloat(a) + parseFloat(b);
+            return Math.round((parseFloat(a) + parseFloat(b))*1000000)/1000000;
         }
 
         function subtract(a, b) {
-            return parseFloat(a) - parseFloat(b);
+            return Math.round((parseFloat(a) - parseFloat(b))*1000000)/1000000;
         }
 
         function multiply(a, b) {
-            return parseFloat(a) * parseFloat(b);
+            return Math.round((parseFloat(a) * parseFloat(b))*1000000)/1000000;
         }
 
         function divide(a, b) {
-            return parseFloat(a) / parseFloat(b);
+            return Math.round((parseFloat(a) / parseFloat(b))*1000000)/1000000;
         }
 
         let number1;
@@ -57,9 +61,9 @@
             } else if (operator == "/") {
                 result = display.textContent = divide(number1, number2);
             } 
-                operator = null;
-                number2 = null;
-                number1 = result;
+            operator = null;
+            number2 = null;
+            number1 = result;
         }
 
         let display = document.querySelector("#display");
@@ -68,28 +72,30 @@
 
         for (let i = 0; i < numbers.length; i++) {
             numbers[i].addEventListener("click", function() {
-            if (display.textContent == "Display") {
-                display.textContent = "";
-            }
-            if (operator == null && result == null) {
-                if (number1 == null) {
-                    number1 = "0" + numbers[i].textContent;
-                    display.textContent = numbers[i].textContent;
-                } else {
-                    number1 += numbers[i].textContent
-                    display.textContent += numbers[i].textContent;
+                /*
+                if (display.textContent == "Display") {
+                    display.textContent = "";
                 }
-            } else {
-                if (result != null || operator != null) {
-                    if (number2 == null) {
-                        number2 = "0" + numbers[i].textContent
+                */
+                if (operator == null && result == null) {
+                    if (number1 == null) {
+                        number1 = "0" + numbers[i].textContent;
                         display.textContent = numbers[i].textContent;
                     } else {
-                        number2 += numbers[i].textContent
+                        number1 += numbers[i].textContent
                         display.textContent += numbers[i].textContent;
                     }
+                } else {
+                    if (result != null || operator != null) {
+                        if (number2 == null) {
+                            number2 = "0" + numbers[i].textContent
+                            display.textContent = numbers[i].textContent;
+                        } else {
+                            number2 += numbers[i].textContent
+                            display.textContent += numbers[i].textContent;
+                        }
+                    }
                 }
-            }
             });
         }
 
@@ -100,7 +106,17 @@
 
         let subtracting = document.querySelector("#subtract");
         subtracting.addEventListener("click", function() {
-            operator = "-";
+            if (number1 == null) {
+                number1 = "-";
+                display.textContent = number1;
+            } else if (number1 != null && operator == null) {
+                operator = "-";
+            } else if (result != null || operator != null) {
+                    if (number2 == null) {
+                        number2 = "-";
+                        display.textContent = number2;
+                    } 
+            }
         });
 
         let multiplying = document.querySelector("#multiply");
@@ -115,6 +131,42 @@
 
         let equals = document.querySelector("#equals");
         equals.addEventListener("click", operate);
+        
+        let comma = document.querySelector("#comma");
+        comma.addEventListener("click", function() {
+            if (display.textContent.includes(".")) {
+                return;
+            }
+            if (operator == null && result == null) {
+                    if (number1 == null) {
+                        number1 = "0" + comma.textContent;
+                        display.textContent = comma.textContent;
+                    } else {
+                        number1 += comma.textContent
+                        display.textContent += comma.textContent;
+                    }
+                } else {
+                    if (result != null || operator != null) {
+                        if (number2 == null) {
+                            number2 = "0" + comma.textContent
+                            display.textContent = comma.textContent;
+                        } else {
+                            number2 += comma.textContent
+                            display.textContent += comma.textContent;
+                        }
+                    }
+                }
+            });
+
+            // limit number of decimals in result ok
+            // add +- sign to make negative numbers ok?
+            // 1.9 - 1.5 ok
+            // limit number of decimals in numbers
+
+            let sign = document.querySelector("#sign");
+            sign.addEventListener("click", function() {
+                
+            })
     </script>
 </body>
 </html>
