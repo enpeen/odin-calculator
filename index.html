@@ -5,56 +5,103 @@
     <title>Document</title>
 </head>
 <body>
+    <div class="container">
     <div id="display">0</div>
 
-    <button id="zero" class="number">0</button>
-    <button id="one" class="number">1</button>
-    <button id="two" class="number">2</button>
-    <button id="three" class="number">3</button>
-    <button id="four" class="number">4</button>
-    <button id="five" class="number">5</button>
-    <button id="six" class="number">6</button>
-    <button id="seven" class="number">7</button>
-    <button id="eight" class="number">8</button>
-    <button id="nine" class="number">9</button>
+    <div class="firstRow">
+        <button id="power">On/Off</button>
+        <button id="clear">AC</button>
+        <button id="backspace">Del</button>
+        <button id="sign">+/-</button>
+    </div>
 
-    <button id="add">+</button>
-    <button id="subtract">-</button>
-    <button id="multiply">*</button>
-    <button id="divide">/</button>
+    <div class="secondRow">
+        <button id="seven" class="number">7</button>
+        <button id="eight" class="number">8</button>
+        <button id="nine" class="number">9</button>
+        <button id="divide" class="operator">/</button>
+    </div>
 
-    <button id="equals">=</button>
-    <button id="clear">all clear</button>
+    <div class="thirdRow">
+        <button id="four" class="number">4</button>
+        <button id="five" class="number">5</button>
+        <button id="six" class="number">6</button>
+        <button id="multiply" class="operator">*</button>
+    </div>
 
-    <button id="comma">.</button>
+    <div class="fourthRow">
+        <button id="one" class="number">1</button>
+        <button id="two" class="number">2</button>
+        <button id="three" class="number">3</button>
+        <button id="subtract" class="operator">-</button>
+    </div>
 
-    <button id="sign">+/-</button>
-
-    <button id="backspace">delete</button>
-
+    <div class="fifthRow">
+        <button id="zero" class="number">0</button>
+        <button id="comma">.</button>
+        <button id="equals">=</button>
+        <button id="add" class="operator">+</button>
+    </div>
+</div>
     <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* border: 2px solid black; */
+            height: 700px;
+        }
+
+        #display {
+            display: flex;
+            flex-direction: row-reverse;
+            background-color: rgb(128, 212, 128);
+            width: 295px;
+            height: 70px;
+            padding-right: 25px;
+            align-items: center;
+            font-size: 35px;
+            font-weight: bold;
+            border-bottom: 7px solid black;
+        }
+
+        .firstRow, .secondRow, .thirdRow, .fourthRow, .fifthRow {
+            display: flex;
+        }
+
         button {
-            color: blue;
+            height: 80px;
+            width: 80px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border: 12px solid black;
+            border-radius: 5px;
         }
     </style>
     <script>
         function add(a, b) {
-            return Math.round((parseFloat(a) + parseFloat(b))*1000000)/1000000;
+            return Math.round((parseFloat(a) + parseFloat(b))*100000000)/100000000;
         }
 
         function subtract(a, b) {
-            return Math.round((parseFloat(a) - parseFloat(b))*1000000)/1000000;
+            return Math.round((parseFloat(a) - parseFloat(b))*100000000)/100000000;
         }
 
         function multiply(a, b) {
-            return Math.round((parseFloat(a) * parseFloat(b))*1000000)/1000000;
+            return Math.round((parseFloat(a) * parseFloat(b))*100000000)/100000000;
         }
 
         function divide(a, b) {
             if (b == "0") {
                 return display.textContent = "Error: Dividing by 0";
             } else {
-                return Math.round((parseFloat(a) / parseFloat(b))*1000000)/1000000;
+                return Math.round((parseFloat(a) / parseFloat(b))*100000000)/100000000; 
             }
         }
 
@@ -76,6 +123,10 @@
             } else if (operator == "/") {
                 result = display.textContent = divide(number1, number2);
             } 
+            if (result != null && result.toString().length >= 10) {
+                display.textContent = "Error: max number reached";
+                return;
+            }
             operator = null;
             number2 = null;
             number1 = result;
@@ -86,95 +137,20 @@
         let numbers = document.querySelectorAll(".number");
 
         for (let i = 0; i < numbers.length; i++) {
-            numbers[i].addEventListener("click", function() {
-                if (number1 != null && number1.length >= 8 && operator == null) {
-                    return;
-                }
-                if (number2 != null && number2.length >= 8) {
-                    return;
-                }
-                if (operator == null && result == null) {
-                    if (number1 == null) {
-                        number1 = numbers[i].textContent;
-                        display.textContent = numbers[i].textContent;
-                    } else {
-                        number1 += numbers[i].textContent
-                        display.textContent += numbers[i].textContent;
-                    }
-                } else {
-                    if (result != null || operator != null) {
-                        if (number2 == null) {
-                            number2 = numbers[i].textContent
-                            display.textContent = numbers[i].textContent;
-                        } else {
-                            number2 += numbers[i].textContent
-                            display.textContent += numbers[i].textContent;
-                        }
-                    }
-                }
-            });
+            numbers[i].addEventListener("click", doANumber);
         }
 
-        let adding = document.querySelector("#add");
-        adding.addEventListener("click", function() {
-            if (number1 == null) {
-                number1 = 0;
-            }
-            operator = "+";
-        });
+        let operators = document.querySelectorAll(".operator");
 
-        let subtracting = document.querySelector("#subtract");
-        subtracting.addEventListener("click", function() {
-            if (number1 == null) {
-                number1 = 0;
-            }
-            operator = "-";
-        });
-
-        let multiplying = document.querySelector("#multiply");
-        multiplying.addEventListener("click", function() {
-            if (number1 == null) {
-                number1 = 0;
-            }
-            operator = "*";
-        });
-
-        let dividing = document.querySelector("#divide");
-        dividing.addEventListener("click", function() {
-            if (number1 == null) {
-                number1 = 0;
-            }
-            operator = "/";
-        });
+        for (let i = 0; i < operators.length; i++) {
+            operators[i].addEventListener("click", doAOperation);
+        }
 
         let equals = document.querySelector("#equals");
         equals.addEventListener("click", operate);
         
         let comma = document.querySelector("#comma");
-        comma.addEventListener("click", function() {
-            if (display.textContent.includes(".")) {
-                return;
-            }
-            if (operator == null && result == null) {
-                    if (number1 == null) {
-                        number1 = "0" + comma.textContent;
-                        display.textContent = "0" + comma.textContent;
-                    } else {
-                        number1 += comma.textContent
-                        display.textContent += comma.textContent;
-                    }
-                } else {
-                    if (result != null || operator != null) {
-                        if (number2 == null) {
-                            number2 = "0" + comma.textContent
-                            display.textContent = "0" + comma.textContent;
-                        } else {
-                            number2 += comma.textContent
-                            display.textContent += comma.textContent;
-                        }
-                    }
-                }
-            });
+        comma.addEventListener("click", doAComma);
 
             // limit number of decimals in result ok
             // add +- sign to make negative numbers ok
@@ -190,10 +166,12 @@
             // when users hits right at the start . it show ie .5 and not 0.5 ok
             // backspace button to remove one character ok
             // keyboard support? maybe not
+            // style ok
+            // result can contain many more digits and screen can overflow ok
 
             let sign = document.querySelector("#sign");
             sign.addEventListener("click", function() {
-                if (display.textContent == 0) { // probably better to try it this way
+                if (display.textContent == 0 || display.textContent == null) { // probably better to try it this way
                     return;
                 }
                 if (number1 != null && number2 == "0") {
@@ -216,15 +194,21 @@
 
             let clear = document.querySelector("#clear");
             clear.addEventListener("click", function() {
+                if (display.textContent == "") { //display.textContent is never null
+                } else {
+                    display.textContent = 0;
+                }
                 number1 = null;
                 operator = null;
                 number2 = null;
                 result = null;
-                display.textContent = 0;
             });
 
             let backspace = document.querySelector("#backspace");
             backspace.addEventListener("click", function() {
+                if (display.textContent == null) {
+                    return;
+                }
                 if (display.textContent == number1) {
                     if (number1.length == 1) {
                         number1 = "0";
@@ -245,6 +229,97 @@
                     }
                 }
             })
+
+            let buttons = document.querySelectorAll("button");
+
+            let power = document.querySelector("#power");
+            power.addEventListener("click", function() {
+                if (display.textContent != "") { //display.textContent is never null as of now
+                    display.textContent = null;
+                    display.style.backgroundColor = "silver";
+                    number1 = null;
+                    operator = null;
+                    number2 = null;
+                    result = null;
+                    for (let number of numbers) {
+                        number.removeEventListener("click", doANumber);
+                    }
+                    for (let operator of operators) {
+                        operator.removeEventListener("click", doAOperation);
+                    }
+                    comma.removeEventListener("click", doAComma);
+                } else if (display.textContent == "") {
+                    display.textContent = 0;
+                    display.style.backgroundColor = "rgb(128, 212, 128)";
+                    for (let number of numbers) {
+                        number.addEventListener("click", doANumber);
+                    }
+                    for (let operator of operators) {
+                        operator.addEventListener("click", doAOperation);
+                    }
+                    comma.addEventListener("click", doAComma);
+                }
+            })
+
+            function doANumber() { // need a .toString().length ?
+                if (number1 != null && number1.length >= 9 && operator == null) {
+                    return;
+                }
+                if (number2 != null && number2.length >= 9) {
+                    return;
+                }
+                if (operator == null && result == null) {
+                    if (number1 == null) {
+                        number1 = this.textContent;
+                        display.textContent = this.textContent;
+                    } else {
+                        number1 += this.textContent
+                        display.textContent += this.textContent;
+                    }
+                } else {
+                    if (result != null || operator != null) {
+                        if (number2 == null) {
+                            number2 = this.textContent
+                            display.textContent = this.textContent;
+                        } else {
+                            number2 += this.textContent
+                            display.textContent += this.textContent;
+                        }
+                    }
+                }
+            }
+
+            function doAOperation() {
+                if (number1 == null) {
+                    number1 = 0;
+                }
+                operator = this.textContent;
+            }
+        
+            function doAComma() {
+                if (display.textContent.includes(".")) {
+                return;
+            }
+            if (operator == null && result == null) {
+                    if (number1 == null) {
+                        number1 = "0" + comma.textContent;
+                        display.textContent = "0" + comma.textContent;
+                    } else {
+                        number1 += comma.textContent
+                        display.textContent += comma.textContent;
+                    }
+                } else {
+                    if (result != null || operator != null) {
+                        if (number2 == null) {
+                            number2 = "0" + comma.textContent
+                            display.textContent = "0" + comma.textContent;
+                        } else {
+                            number2 += comma.textContent
+                            display.textContent += comma.textContent;
+                        }
+                    }
+                }
+            }
     </script>
 </body>
 </html>
