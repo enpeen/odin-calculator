@@ -5,6 +5,8 @@
     <title>Document</title>
 </head>
 <body>
+    <div id="display">0</div>
+
     <button id="zero" class="number">0</button>
     <button id="one" class="number">1</button>
     <button id="two" class="number">2</button>
@@ -22,13 +24,19 @@
     <button id="divide">/</button>
 
     <button id="equals">=</button>
-    <button id="clear">clear</button>
+    <button id="clear">all clear</button>
 
     <button id="comma">.</button>
 
     <button id="sign">+/-</button>
 
-    <div id="display">0</div>
+    <button id="backspace">delete</button>
+
+    <style>
+        button {
+            color: blue;
+        }
+    </style>
     <script>
         function add(a, b) {
             return Math.round((parseFloat(a) + parseFloat(b))*1000000)/1000000;
@@ -43,7 +51,11 @@
         }
 
         function divide(a, b) {
-            return Math.round((parseFloat(a) / parseFloat(b))*1000000)/1000000;
+            if (b == "0") {
+                return display.textContent = "Error: Dividing by 0";
+            } else {
+                return Math.round((parseFloat(a) / parseFloat(b))*1000000)/1000000;
+            }
         }
 
         let number1;
@@ -52,6 +64,9 @@
         let result;
 
         function operate() {
+            if (number2 == null || number2 == null) {
+                return;
+            }
             if (operator == "+") {
                 result = display.textContent = add(number1, number2);
             } else if (operator == "-") {
@@ -72,14 +87,15 @@
 
         for (let i = 0; i < numbers.length; i++) {
             numbers[i].addEventListener("click", function() {
-                /*
-                if (display.textContent == "Display") {
-                    display.textContent = "";
+                if (number1 != null && number1.length >= 8 && operator == null) {
+                    return;
                 }
-                */
+                if (number2 != null && number2.length >= 8) {
+                    return;
+                }
                 if (operator == null && result == null) {
                     if (number1 == null) {
-                        number1 = "0" + numbers[i].textContent;
+                        number1 = numbers[i].textContent;
                         display.textContent = numbers[i].textContent;
                     } else {
                         number1 += numbers[i].textContent
@@ -88,7 +104,7 @@
                 } else {
                     if (result != null || operator != null) {
                         if (number2 == null) {
-                            number2 = "0" + numbers[i].textContent
+                            number2 = numbers[i].textContent
                             display.textContent = numbers[i].textContent;
                         } else {
                             number2 += numbers[i].textContent
@@ -101,31 +117,33 @@
 
         let adding = document.querySelector("#add");
         adding.addEventListener("click", function() {
+            if (number1 == null) {
+                number1 = 0;
+            }
             operator = "+";
         });
 
         let subtracting = document.querySelector("#subtract");
         subtracting.addEventListener("click", function() {
             if (number1 == null) {
-                number1 = "-";
-                display.textContent = number1;
-            } else if (number1 != null && operator == null) {
-                operator = "-";
-            } else if (result != null || operator != null) {
-                    if (number2 == null) {
-                        number2 = "-";
-                        display.textContent = number2;
-                    } 
+                number1 = 0;
             }
+            operator = "-";
         });
 
         let multiplying = document.querySelector("#multiply");
         multiplying.addEventListener("click", function() {
+            if (number1 == null) {
+                number1 = 0;
+            }
             operator = "*";
         });
 
         let dividing = document.querySelector("#divide");
         dividing.addEventListener("click", function() {
+            if (number1 == null) {
+                number1 = 0;
+            }
             operator = "/";
         });
 
@@ -140,7 +158,7 @@
             if (operator == null && result == null) {
                     if (number1 == null) {
                         number1 = "0" + comma.textContent;
-                        display.textContent = comma.textContent;
+                        display.textContent = "0" + comma.textContent;
                     } else {
                         number1 += comma.textContent
                         display.textContent += comma.textContent;
@@ -149,7 +167,7 @@
                     if (result != null || operator != null) {
                         if (number2 == null) {
                             number2 = "0" + comma.textContent
-                            display.textContent = comma.textContent;
+                            display.textContent = "0" + comma.textContent;
                         } else {
                             number2 += comma.textContent
                             display.textContent += comma.textContent;
@@ -159,14 +177,73 @@
             });
 
             // limit number of decimals in result ok
-            // add +- sign to make negative numbers ok?
+            // add +- sign to make negative numbers ok
             // 1.9 - 1.5 ok
-            // limit number of decimals in numbers
-            // when not all values are present user can press equals and it throws NaN
+            // limit number of decimals in numbers sort of ok (not accounting for - or .), need to find a way to
+            //      remove and then add event listener right back, named function would be useful maybe
+            // when not all values are present user can press equals and it throws NaN looks ok
+            // clear button ok
+            // when attempting to divide by 0 display error message ok
+            // when user immidiately pressen sign like + when 0 is still showing at screen ok
+            // -0 is possible ok
+            // need more optimalization
+            // when users hits right at the start . it show ie .5 and not 0.5 ok
+            // backspace button to remove one character ok
+            // keyboard support? maybe not
 
             let sign = document.querySelector("#sign");
             sign.addEventListener("click", function() {
-                
+                if (display.textContent == 0) { // probably better to try it this way
+                    return;
+                }
+                if (number1 != null && number2 == "0") {
+                    return;
+                }
+                if (number1 != null && operator == null && number1.includes("-") == false) {
+                    number1 = "-" + number1;
+                    display.textContent = number1;
+                } else if (number1 != null && operator == null && number1.includes("-")) {
+                    number1 = number1.replace("-", "");
+                    display.textContent = number1;
+                } else if (result != null || operator != null && number2.includes("-") == false) {
+                    number2 = "-" + number2;
+                    display.textContent = number2;
+                } else if (result != null || operator != null && number2.includes("-")) {
+                    number2 = number2.replace("-", "");
+                    display.textContent = number2;
+                }
+            });
+
+            let clear = document.querySelector("#clear");
+            clear.addEventListener("click", function() {
+                number1 = null;
+                operator = null;
+                number2 = null;
+                result = null;
+                display.textContent = 0;
+            });
+
+            let backspace = document.querySelector("#backspace");
+            backspace.addEventListener("click", function() {
+                if (display.textContent == number1) {
+                    if (number1.length == 1) {
+                        number1 = "0";
+                        display.textContent = number1;
+                    } else {
+                        let length = number1.length - 1;
+                        number1 = number1.slice(0, length);
+                        display.textContent = number1;
+                    }
+                } else if (display.textContent == number2) {
+                    if (number2.length == 1) {
+                        number2 = "0";
+                        display.textContent = number1;
+                    } else {
+                        let length = number2.length - 1;
+                        number2 = number2.slice(0, length);
+                        display.textContent = number2;
+                    }
+                }
             })
     </script>
 </body>
