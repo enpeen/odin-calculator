@@ -20,6 +20,10 @@ let number2;
 let result;
 
 function operate() {
+    if (number2 == "-" || number2 == "-0." || number2 == "-0") { 
+        display.textContent = "Error: invalid number";
+        return;
+    }
     if (number1 == null || number2 == null) {
         return;
     }
@@ -36,7 +40,7 @@ function operate() {
     } else if (operator == "/") {
         result = display.textContent = divide(number1, number2).toString();
     } 
-    if (result != null && result.toString().length >= 11) {
+    if (result != null && result.toString().length >= 12) { 
         display.textContent = "Error: max number reached";
         return;
     }
@@ -68,23 +72,24 @@ comma.addEventListener("click", doAComma);
 
 let sign = document.querySelector("#sign");
 sign.addEventListener("click", function() {
-    if (display.textContent == "0" || display.textContent == null) { 
+    if (display.textContent == "0" || display.textContent == null ||
+        display.textContent == "0.") { 
         return;
     }
     if (number1 != null && number2 == "0") {
         return;
     }
-    if (number1 != null && operator == null && number1.includes("-") == false) {
+    if (number1 != null && operator == null && number1.includes("-") == false && display.textContent == number1) {
         number1 = "-" + number1;
         display.textContent = number1;
-    } else if (number1 != null && operator == null && number1.includes("-")) {
+    } else if (number1 != null && operator == null && number1.includes("-") && display.textContent == number1) {
         number1 = number1.replace("-", "");
         display.textContent = number1;
-    } else if (result != null || operator != null && number2.includes("-") == false) {
+    } else if ((result != null || operator != null) && number2.includes("-") == false && display.textContent == number2) {
         number2 = "-" + number2;
         display.textContent = number2;
-    } else if (result != null || operator != null && number2.includes("-")) {
-        number2 = number2.replace("-", "");
+    } else if ((result != null || operator != null) && number2.includes("-") && display.textContent == number2) {
+        number2 = number2.replace("-", ""); // and has higher precedence than or
         display.textContent = number2;
     }
 });
@@ -118,7 +123,7 @@ backspace.addEventListener("click", function() {
     } else if (display.textContent == number2) {
         if (number2.length == 1) {
             number2 = "0";
-            display.textContent = "0";
+            display.textContent = number2;
         } else {
             let length = number2.length - 1;
             number2 = number2.slice(0, length);
@@ -194,6 +199,10 @@ function doANumber() { // need a .toString().length ?
 }
 
 function doAOperation() {
+    if (number1 == "-" || number1 == "-0" || number1 == "-0.") {
+        display.textContent = "Error: invalid number";
+        return;
+    }
     if (number2 != null && operator != null) {
         return;
     }
@@ -204,8 +213,9 @@ function doAOperation() {
 }
 
 function doAComma() {
-    if (display.textContent.includes(".")) {
-    return;
+    if (display.textContent.includes(".") || display.textContent == "-" ||
+        (display.textContent == number1 && operator != null)){ 
+        return;
     }
     if (operator == null && result == null) {
         if (number1 == null) {
@@ -230,4 +240,4 @@ function doAComma() {
 
 // limit number of decimals in numbers sort of ok (not accounting for - or .)
 // need more optimalization ok?
-// keyboard support? maybe not - ie some laptops only have operators by fn + key, might run into problems
+// keyboard support? maybe not - ie some laptops only have operators by fn + key, might run into problem
