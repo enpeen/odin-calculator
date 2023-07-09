@@ -118,7 +118,7 @@ backspace.addEventListener("click", function() {
     } else if (display.textContent == number2) {
         if (number2.length == 1) {
             number2 = "0";
-            display.textContent = number1;
+            display.textContent = "0";
         } else {
             let length = number2.length - 1;
             number2 = number2.slice(0, length);
@@ -158,6 +158,9 @@ power.addEventListener("click", function() {
 })
 
 function doANumber() { // need a .toString().length ?
+    if (result != null && operator == null) {
+        return;
+    }
     if (number1 != null && number1.toString().length >= 9 && operator == null) {
         return;
     }
@@ -174,6 +177,11 @@ function doANumber() { // need a .toString().length ?
         }
     } else {
         if (result != null || operator != null) {
+            if (number2 == "0") {
+                number2 = this.textContent
+                display.textContent = this.textContent;
+                return;
+            }
             if (number2 == null) {
                 number2 = this.textContent
                 display.textContent = this.textContent;
@@ -186,8 +194,11 @@ function doANumber() { // need a .toString().length ?
 }
 
 function doAOperation() {
+    if (number2 != null && operator != null) {
+        return;
+    }
     if (number1 == null) {
-        number1 = 0;
+        number1 = "0";
     }
     operator = this.textContent; 
 }
@@ -220,4 +231,3 @@ function doAComma() {
 // limit number of decimals in numbers sort of ok (not accounting for - or .)
 // need more optimalization ok?
 // keyboard support? maybe not - ie some laptops only have operators by fn + key, might run into problems
-
