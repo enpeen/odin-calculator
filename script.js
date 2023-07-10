@@ -73,10 +73,7 @@ comma.addEventListener("click", doAComma);
 let sign = document.querySelector("#sign");
 sign.addEventListener("click", function() {
     if (display.textContent == "0" || display.textContent == null ||
-        display.textContent == "0.") { 
-        return;
-    }
-    if (number1 != null && number2 == "0") {
+        display.textContent == "0." || (number1 != null && number2 == "0")) { 
         return;
     }
     if (number1 != null && operator == null && number1.includes("-") == false && display.textContent == number1) {
@@ -96,8 +93,7 @@ sign.addEventListener("click", function() {
 
 let clear = document.querySelector("#clear");
 clear.addEventListener("click", function() {
-    if (display.textContent == "") { //display.textContent is never null
-    } else {
+    if (display.textContent != "") { //display.textContent is never null
         display.textContent = 0;
     }
     number1 = null;
@@ -114,23 +110,21 @@ backspace.addEventListener("click", function() {
     if (display.textContent == number1) {
         if (number1.length == 1) {
             number1 = "0";
-            display.textContent = number1;
         } else {
             let length = number1.length - 1;
             number1 = number1.slice(0, length);
-            display.textContent = number1;
         }
+        display.textContent = number1;
     } else if (display.textContent == number2) {
         if (number2.length == 1) {
             number2 = "0";
-            display.textContent = number2;
         } else {
             let length = number2.length - 1;
             number2 = number2.slice(0, length);
-            display.textContent = number2;
         }
+        display.textContent = number2;
     }
-})
+});
 
 let power = document.querySelector("#power");
 
@@ -163,13 +157,9 @@ power.addEventListener("click", function() {
 })
 
 function doANumber() { // need a .toString().length ?
-    if (result != null && operator == null) {
-        return;
-    }
-    if (number1 != null && number1.toString().length >= 9 && operator == null) {
-        return;
-    }
-    if (number2 != null && number2.toString().length >= 9) {
+    if ((result != null && operator == null) ||
+        (number1 != null && number1.toString().length >= 9 && operator == null) ||
+        (number2 != null && number2.toString().length >= 9)) {
         return;
     }
     if (operator == null && result == null) {
@@ -185,9 +175,7 @@ function doANumber() { // need a .toString().length ?
             if (number2 == "0") {
                 number2 = this.textContent
                 display.textContent = this.textContent;
-                return;
-            }
-            if (number2 == null) {
+            } else if (number2 == null) {
                 number2 = this.textContent
                 display.textContent = this.textContent;
             } else {
